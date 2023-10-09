@@ -1,9 +1,19 @@
-let playerWins = document.createElement('div');
-let computerWins = document.createElement('div');
+let gameAction = document.createElement('div');
+let results = document.createElement('div');
+let rounds = document.createElement('div');
+let result = document.createElement('div');
+let winner = document.createElement('div');
+let game = document.querySelector('.game')
 
+const rock = document.querySelector('#rock');
+const paper = document.querySelector('#paper');
+const scissors = document.querySelector('#scissors')
+const choices = [rock, paper, scissors];
 
-
-
+let playerWins = 0;
+let computerWins = 0;
+let draw = 0;
+let round = 0;
 
 function getComputerChoice(){
     const choice = Math.floor(Math.random() * 100);
@@ -19,16 +29,27 @@ function getComputerChoice(){
 
 }
 
-function playerSelection(){
-    const playerChoice = prompt("Choose one: Paper, Rock or Scissors").toLowerCase();// for console play
+function gameWinner(){
+    if(playerWins === 5){
+        return ('Player won the game!')
+    } else if (computerWins === 5){
+        return ('Player lost the game!')
+    }
+    return ('')
+}
 
-        if ((playerChoice === "paper") || (playerChoice === "rock") || (playerChoice === "scissors")){
-            return playerChoice
-        }
-        else {
-            alert("You should choose rock, paper or scissors!")
-            return playerSelection()
-        }}
+function gameResult(){
+    if(results.innerHTML.includes('win')){
+        playerWins ++
+    }else if (results.innerText.includes('won')){
+        computerWins ++
+    }else{
+        draw ++;
+    }
+    return `Round ${round + 1} \n ** Your score: ${playerWins} | Computer score: ${computerWins} | Draw: ${draw}**`;
+}
+
+rounds.innerText = `It's ${round + 1 } round`;
     
 
 
@@ -44,12 +65,27 @@ function playRound(playerSelection, computerSelection){
     }
 }
 
-function game(){
-    playRound(playerSelection(), getComputerChoice())
-    playRound(playerSelection(), getComputerChoice())
-    playRound(playerSelection(), getComputerChoice())
-    playRound(playerSelection(), getComputerChoice())
-    playRound(playerSelection(), getComputerChoice())
-}
+choices.forEach(button => {
+    button.addEventListener('click', (e) => {
+        if(playerWins === 5 || computerWins === 5){
+            gameAction.innerText = '';
+            results.innerText = '';
+            rounds.innerText = '';
+            result.innerText = '';
+        }else {
+            let computerSelection = getComputerChoice();
+            rounds.innerText = '';
+            gameAction.innerText = `You selected ${button.id}, the computer selected ${computerSelection}.`
+            results.innerText = playRound(button.id, computerSelection);
+            result.innerText = gameResult();
+            round ++
+            winner.innerText = gameWinner();
+        }
+    })
+});
 
-game()
+game.appendChild(gameAction);
+game.appendChild(results);
+game.appendChild(result);
+game.appendChild(rounds);
+game.appendChild(winner);
